@@ -36,7 +36,10 @@ model = BTC_model(config=config.model).to(device)
 
 # Load model
 if os.path.isfile(model_file):
-    checkpoint = torch.load(model_file)
+    if torch.cuda.is_available():
+        checkpoint = torch.load(model_file)
+    else:
+        checkpoint = torch.load(model_file, torch.device('cpu'))
     mean = checkpoint['mean']
     std = checkpoint['std']
     model.load_state_dict(checkpoint['model'])
